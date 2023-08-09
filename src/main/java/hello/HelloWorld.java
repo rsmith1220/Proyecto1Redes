@@ -1,29 +1,27 @@
 package hello;
-
 import org.jivesoftware.smack.*;
-import org.jivesoftware.smack.chat.Chat;
-import org.jivesoftware.smack.chat.ChatManager;
-import org.jivesoftware.smack.chat.ChatMessageListener;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
-public class HelloWorld {
-  public static void main(String[] args) {
-    Greeter greeter = new Greeter();
-    System.out.println(greeter.sayHello());
-    XMPPTCPConnectionConfiguration config = XMPPTCPConnectionConfiguration.builder()
-  .setUsernameAndPassword("1220","122001")
-  // .setXmppDomain("alumchan.xyz")
-  .setHost("alumchan.xyz")
-  .build();
-  try {
-    AbstractXMPPConnection connection = new XMPPTCPConnection(config);
-connection.connect(); //Establishes a connection to the server
-connection.login(); //Logs in
-System.out.println("Facts");
+import org.jxmpp.stringprep.XmppStringprepException; // Import the exception
 
-  } catch (Exception e) {
-    // TODO: handle exception\
-    System.out.println("nel");
-  }
-  }
+public class HelloWorld {
+    public static void main(String[] args) {
+        XMPPTCPConnectionConfiguration config = XMPPTCPConnectionConfiguration.builder()
+                .setUsernameAndPassword("1220", "122001")
+                .setXmppDomain("alumchat.xyz")
+                .setHost("alumchat.xyz")
+                .build();
+        try {
+            AbstractXMPPConnection connection = new XMPPTCPConnection(config);
+            connection.connect();
+            connection.login();
+            System.out.println("Connected and logged in!");
+        } catch (XmppStringprepException e) { // Catch XmppStringprepException
+            e.printStackTrace();
+            System.out.println("Error during XMPP string preparation.");
+        } catch (Exception e) { // Catch other exceptions
+            e.printStackTrace();
+            System.out.println("Failed to connect or log in.");
+        }
+    }
 }
