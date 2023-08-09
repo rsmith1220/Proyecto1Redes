@@ -8,18 +8,22 @@ import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 public class HelloWorld {
   public static void main(String[] args) {
-    String username = "1220";
-    String password = "122001";
-    // String recipient = "recipient_username";
-    String server = "alumchat.xyz";
-
+    Greeter greeter = new Greeter();
+    System.out.println(greeter.sayHello());
     XMPPTCPConnectionConfiguration config = XMPPTCPConnectionConfiguration.builder()
-            .setUsernameAndPassword(username, password)
-            .setXmppDomain(server)
-            .build();
-
+  .setUsernameAndPassword("1220","122001")
+  // .setXmppDomain("alumchan.xyz")
+  .setHost("alumchan.xyz")
+  .build();
+  try {
     AbstractXMPPConnection connection = new XMPPTCPConnection(config);
+connection.connect(); //Establishes a connection to the server
+connection.login(); //Logs in
+System.out.println("Facts");
 
-
+  } catch (Exception e) {
+    // TODO: handle exception\
+    System.out.println("nel");
+  }
   }
 }
