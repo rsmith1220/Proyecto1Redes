@@ -18,7 +18,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>hello.HelloWorld</mainClass>
+                  <mainClass>connector.Connection</mainClass>
                 </transformer>
               </transformers>
             </configuration>

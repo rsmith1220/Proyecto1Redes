@@ -1,17 +1,18 @@
-package hello;
+package connector;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jxmpp.stringprep.XmppStringprepException; // Import the exception
 
-public class HelloWorld {
+public class Connection {
     public static void main(String[] args) {
-        XMPPTCPConnectionConfiguration config = XMPPTCPConnectionConfiguration.builder()
+        try {
+            XMPPTCPConnectionConfiguration config = XMPPTCPConnectionConfiguration.builder()
                 .setUsernameAndPassword("1220", "122001")
                 .setXmppDomain("alumchat.xyz")
                 .setHost("alumchat.xyz")
                 .build();
-        try {
+
             AbstractXMPPConnection connection = new XMPPTCPConnection(config);
             connection.connect();
             connection.login();
