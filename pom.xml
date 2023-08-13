@@ -39,6 +39,12 @@
       <version>4.4.4</version>
     </dependency>
 
+  
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-chat-api</artifactId>
+      <version>11.4</version>
+    </dependency>
   </dependencies>
     <modelVersion>4.0.0</modelVersion>
 
