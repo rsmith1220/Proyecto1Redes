@@ -3,6 +3,10 @@ package connector;
 import org.jivesoftware.smack.*;
 import org.jivesoftware.smack.chat2.Chat;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.roster.Roster;
+import org.jivesoftware.smack.roster.RosterEntry;
+import org.jivesoftware.smack.roster.RosterListener;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jxmpp.jid.EntityBareJid;
@@ -19,36 +23,102 @@ public class Connection {
 
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("Ingrese su nombre de usuario");
-        String user = sc.nextLine();
-        System.out.println("Ingrese su password");
-        String pass = sc.nextLine();
+        int choice;
 
-        try {
-            XMPPTCPConnectionConfiguration config = XMPPTCPConnectionConfiguration.builder()
-                    .setHost("alumchat.xyz")
-                    .setXmppDomain("alumchat.xyz")
-                    .setPort(5222)
-                    .setSecurityMode(ConnectionConfiguration.SecurityMode.disabled)
-                    .setUsernameAndPassword(user, pass)
-                    .build();
+        do {
 
-            AbstractXMPPConnection connection = new XMPPTCPConnection(config);
-            connection.connect(); // Establishes a connection to the server
-            connection.login(); // Logs in
+            System.out.println("Bienvenido! Elija una opcion");
+            System.out.println("1. Iniciar Sesion");
+            System.out.println("2. Crear usuario");
+            System.out.println("3. Exit");
+            System.out.print("Opcion: ");
+            choice = sc.nextInt();
+            performAction(choice);
+        } while (choice != 3); // exit
 
-            System.out.println("Connected");
+        System.out.println("Saliendo del programa...");
 
-            org.jivesoftware.smack.chat2.ChatManager chat = org.jivesoftware.smack.chat2.ChatManager
-                    .getInstanceFor(connection);
-            EntityBareJid jid = JidCreate.entityBareFrom("ABCD@alumchat.xyz");
-            // Chat chat = chatManager.chatWith(jid);
-            Chat chat2 = chat.chatWith(jid);
-            chat2.send("Hello!");
+    }
 
-        } catch (Exception e) {
-            System.out.println(e);
+    public static void performAction(int choice)
+            throws SmackException, IOException, XMPPException, InterruptedException {
+
+        Scanner sc = new Scanner(System.in);
+        switch (choice) {
+            case 1:
+                System.out.println("Ingrese su nombre de usuario");
+                String user = sc.nextLine();
+                System.out.println("Ingrese su password");
+                String pass = sc.nextLine();
+                AbstractXMPPConnection iniciado = Initiator.Coneccion(user, pass);
+
+                do {
+                    System.out.println("Se ha iniciado sesion");
+                    System.out.println("Desea mandar un mesnaje 1.Privado 2.Chat room 3.Cerrar sesion");
+                    try {
+                        // Start a thread to listen for incoming messages
+                        Thread messageListenerThread = new Thread(() -> {
+                            try {
+                                recibir(iniciado);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
+                        messageListenerThread.start();
+
+                        String result = Mensajes.envio(iniciado);
+                        System.out.println(result);
+
+                        // Keep the program running to listen for incoming messages
+                        while (true) {
+                            Thread.sleep(1000);
+                        }
+
+                        // You should eventually handle graceful shutdown and disconnecting the
+                        // connection
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    /*
+                     * choice = sc.nextInt();
+                     * switch (choice) {
+                     * case 1:
+                     * // Send a message
+                     * String result = Mensajes.envio(iniciado);
+                     * System.out.println(result);
+                     * break;
+                     * case 2:
+                     * break;
+                     * case 3:
+                     * break;
+                     * default:
+                     * System.out.println("Ingrese una opcion correcta");
+                     * }
+                     */
+
+                } while (choice != 3);
+
+                break;
+            case 2:
+                System.out.println("Option 2 selected.");
+                break;
+            case 3:
+                break;
+
+            default:
+                System.out.println("Invalid choice. Please select a valid option.");
         }
+    }
 
+    public static void recibir(AbstractXMPPConnection connection) {
+        org.jivesoftware.smack.chat2.ChatManager chatManager = org.jivesoftware.smack.chat2.ChatManager
+                .getInstanceFor(connection);
+
+        chatManager.addIncomingListener((from, message, chat) -> {
+            String sender = from.getLocalpartOrNull().toString();
+            String messageText = message.getBody();
+            System.out.println("Received message from " + sender + ": " + messageText);
+        });
     }
 }
