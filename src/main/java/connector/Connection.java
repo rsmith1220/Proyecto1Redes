@@ -11,6 +11,7 @@ import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.jid.parts.Localpart;
 import org.jxmpp.stringprep.XmppStringprepException; // Import the exception
 import org.sakaiproject.chat2.model.ChatManager;
 
@@ -36,7 +37,7 @@ public class Connection {
             performAction(choice);
         } while (choice != 3); // exit
 
-        System.out.println("Saliendo del programa...");
+        System.out.println("Disconnected");
 
     }
 
@@ -50,6 +51,7 @@ public class Connection {
                 String user = sc.nextLine();
                 System.out.println("Ingrese su password");
                 String pass = sc.nextLine();
+
                 AbstractXMPPConnection iniciado = Initiator.Coneccion(user, pass);
 
                 do {
@@ -77,6 +79,7 @@ public class Connection {
                         case 2:
                             break;
                         case 3:
+                            Initiator.Deconeccion(iniciado);
                             break;
                         default:
                             System.out.println("Ingrese una opcion correcta");
@@ -86,9 +89,20 @@ public class Connection {
 
                 break;
             case 2:
-                System.out.println("Option 2 selected.");
+                System.out.println("Creando cuenta");
+                System.out.println("Ingrese su nombre");
+                String usuario = sc.nextLine();
+
+                System.out.println("Ingrese su password");
+                String password = sc.nextLine();
+
+                Localpart uaser = Localpart.from(usuario);
+                Initiator.Creation(uaser, password);
+
+                System.out.println("Usuario creado, ya puede iniciar sesion");
                 break;
             case 3:
+
                 break;
 
             default:
