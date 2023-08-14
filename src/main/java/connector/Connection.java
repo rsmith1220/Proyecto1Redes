@@ -55,47 +55,32 @@ public class Connection {
                 do {
                     System.out.println("Se ha iniciado sesion");
                     System.out.println("Desea mandar un mesnaje 1.Privado 2.Chat room 3.Cerrar sesion");
-                    try {
-                        // Start a thread to listen for incoming messages
-                        Thread messageListenerThread = new Thread(() -> {
-                            try {
-                                recibir(iniciado);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        });
-                        messageListenerThread.start();
+                    long startTime = System.currentTimeMillis();
+                    long duration = 5000; // 5 seconds in milliseconds
 
-                        String result = Mensajes.envio(iniciado);
-                        System.out.println(result);
-
-                        // Keep the program running to listen for incoming messages
-                        while (true) {
-                            Thread.sleep(1000);
+                    while (System.currentTimeMillis() - startTime < duration) {
+                        Mensajes.recibir(iniciado);
+                        try {
+                            Thread.sleep(100); // Sleep for 100 milliseconds
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
-
-                        // You should eventually handle graceful shutdown and disconnecting the
-                        // connection
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
+                    choice = sc.nextInt();
+                    switch (choice) {
+                        case 1:
+                            // Send a message
+                            String result = Mensajes.envio(iniciado);
 
-                    /*
-                     * choice = sc.nextInt();
-                     * switch (choice) {
-                     * case 1:
-                     * // Send a message
-                     * String result = Mensajes.envio(iniciado);
-                     * System.out.println(result);
-                     * break;
-                     * case 2:
-                     * break;
-                     * case 3:
-                     * break;
-                     * default:
-                     * System.out.println("Ingrese una opcion correcta");
-                     * }
-                     */
+                            System.out.println(result);
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            break;
+                        default:
+                            System.out.println("Ingrese una opcion correcta");
+                    }
 
                 } while (choice != 3);
 
@@ -111,14 +96,4 @@ public class Connection {
         }
     }
 
-    public static void recibir(AbstractXMPPConnection connection) {
-        org.jivesoftware.smack.chat2.ChatManager chatManager = org.jivesoftware.smack.chat2.ChatManager
-                .getInstanceFor(connection);
-
-        chatManager.addIncomingListener((from, message, chat) -> {
-            String sender = from.getLocalpartOrNull().toString();
-            String messageText = message.getBody();
-            System.out.println("Received message from " + sender + ": " + messageText);
-        });
-    }
 }

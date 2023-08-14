@@ -41,4 +41,15 @@ public class Mensajes {
         return "Mensaje enviado";
     }
 
+    public static void recibir(AbstractXMPPConnection connection) {
+        org.jivesoftware.smack.chat2.ChatManager chatManager = org.jivesoftware.smack.chat2.ChatManager
+                .getInstanceFor(connection);
+
+        chatManager.addIncomingListener((from, message, chat) -> {
+            String sender = from.getLocalpartOrNull().toString();
+            String messageText = message.getBody();
+            System.out.println("Received message from " + sender + ": " + messageText);
+        });
+
+    }
 }
