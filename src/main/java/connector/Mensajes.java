@@ -1,15 +1,23 @@
 package connector;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
+import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.chat2.Chat;
 import org.jivesoftware.smack.chat2.IncomingChatMessageListener;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.roster.Roster;
+import org.jivesoftware.smack.roster.RosterEntry;
+import org.jivesoftware.smack.roster.RosterListener;
+import org.jivesoftware.smack.tcp.XMPPTCPConnection;
+import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.sakaiproject.chat2.model.ChatManager;
+import org.jivesoftware.smack.roster.RosterGroup;
 
 import java.io.IOException;
 import java.util.*;
@@ -51,5 +59,48 @@ public class Mensajes {
             System.out.println("Received message from " + sender + ": " + messageText);
         });
 
+    }
+
+    public static void Personas(AbstractXMPPConnection connection)
+            throws SmackException, IOException, XMPPException, InterruptedException {
+
+        try {
+
+            Roster roster = Roster.getInstanceFor(connection);
+            roster.addRosterListener(new RosterListener() {
+                @Override
+                public void entriesAdded(java.util.Collection<Jid> addresses) {
+                    // Handle new entries
+                }
+
+                @Override
+                public void entriesUpdated(java.util.Collection<Jid> addresses) {
+                    // Handle updated entries
+                }
+
+                @Override
+                public void entriesDeleted(java.util.Collection<Jid> addresses) {
+                    // Handle deleted entries
+                }
+
+                @Override
+                public void presenceChanged(Presence presence) {
+                    // Handle presence changes
+                }
+            });
+
+            roster.reload();
+            for (RosterEntry entry : roster.getEntries()) {
+                System.out.println("User: " + entry.getJid());
+                Presence presence = roster.getPresence(entry.getJid());
+                System.out.println("Presence: " + presence.getStatus());
+                System.out.println("Availability: " + presence.getMode());
+                System.out.println("-------------------------------");
+            }
+
+            connection.disconnect();
+        } catch (SmackException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

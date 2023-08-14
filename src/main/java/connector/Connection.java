@@ -56,7 +56,10 @@ public class Connection {
 
                 do {
                     System.out.println("Se ha iniciado sesion");
-                    System.out.println("Desea mandar un mesnaje 1.Privado 2.Chat room 3.Cerrar sesion");
+
+                    System.out
+                            .println(
+                                    "Desea mandar un mesnaje 1.Privado 2.Chat room 3. Borrar cuenta 4.Ver usuarios 5.Cerrar sesion");
                     long startTime = System.currentTimeMillis();
                     long duration = 5000; // 5 seconds in milliseconds
 
@@ -76,30 +79,29 @@ public class Connection {
 
                             System.out.println(result);
                             break;
-                        case 2:
+                        case 2: // chat room
                             break;
-                        case 3:
+                        case 3:// borrar
+                            Initiator.eliminar();
+                            break;
+                        case 4:// ver usuarios
+                            Mensajes.Personas(iniciado);
+                            break;
+                        case 5:// desconectarse
                             Initiator.Deconeccion(iniciado);
                             break;
                         default:
                             System.out.println("Ingrese una opcion correcta");
                     }
 
-                } while (choice != 3);
+                } while (choice != 5);
 
                 break;
             case 2:
                 System.out.println("Creando cuenta");
-                System.out.println("Ingrese su nombre");
-                String usuario = sc.nextLine();
 
-                System.out.println("Ingrese su password");
-                String password = sc.nextLine();
+                Initiator.Creation();
 
-                Localpart uaser = Localpart.from(usuario);
-                Initiator.Creation(uaser, password);
-
-                System.out.println("Usuario creado, ya puede iniciar sesion");
                 break;
             case 3:
 
