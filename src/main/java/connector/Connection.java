@@ -42,6 +42,7 @@ public class Connection {
                 AbstractXMPPConnection iniciado = Initiator.Coneccion(user, pass);
                 System.out.println("Se ha iniciado sesion");
                 do {
+                    Mensajes.recibir(iniciado);
 
                     System.out
                             .println(

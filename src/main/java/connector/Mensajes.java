@@ -10,6 +10,7 @@ import org.jivesoftware.smack.SmackException.NotConnectedException;
 import org.jivesoftware.smack.SmackException.NotLoggedInException;
 import org.jivesoftware.smack.XMPPException.XMPPErrorException;
 import org.jivesoftware.smack.chat2.Chat;
+import org.jivesoftware.smack.chat2.ChatManager;
 import org.jivesoftware.smack.chat2.IncomingChatMessageListener;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
@@ -63,13 +64,12 @@ public class Mensajes {
     }
 
     public static void recibir(AbstractXMPPConnection connection) {
-        org.jivesoftware.smack.chat2.ChatManager chatManager = org.jivesoftware.smack.chat2.ChatManager
-                .getInstanceFor(connection);
-
-        chatManager.addIncomingListener((from, message, chat) -> {
-            String sender = from.getLocalpartOrNull().toString();
-            String messageText = message.getBody();
-            System.out.println("Received message from " + sender + ": " + messageText);
+        ChatManager chatManager = ChatManager.getInstanceFor(connection);
+        chatManager.addIncomingListener(new IncomingChatMessageListener() {
+            @Override
+            public void newIncomingMessage(EntityBareJid from, Message message, Chat chat) {
+                System.out.println("Received message from " + from + ": " + message.getBody());
+            }
         });
 
     }
