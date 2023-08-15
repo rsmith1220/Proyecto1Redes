@@ -2,7 +2,6 @@ package connector;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.MessageListener;
-import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -20,7 +19,6 @@ import org.jivesoftware.smack.roster.RosterListener;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.filetransfer.FileTransferManager;
 import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
-import org.jivesoftware.smackx.muc.DiscussionHistory;
 import org.jivesoftware.smackx.muc.MucEnterConfiguration;
 import org.jivesoftware.smackx.muc.MultiUserChat;
 import org.jivesoftware.smackx.muc.MultiUserChatManager;
@@ -42,6 +40,7 @@ import java.util.*;
 
 public class Mensajes {
 
+    // Funcion para envio de mensajes
     public static void envio(AbstractXMPPConnection connection)
             throws SmackException, IOException, XMPPException, InterruptedException {
         int opcion = 0;
@@ -60,8 +59,10 @@ public class Mensajes {
         System.out.println("Ingrese el nombre de la persona a la que va dirigida el mensaje");
         String nombre = sc.nextLine();
         EntityBareJid jid = JidCreate.entityBareFrom(nombre + "@alumchat.xyz");
-        recibir(connection);
 
+        // notificaciones
+        recibir(connection);
+        // loop para la conversacion 1 a 1
         do {
 
             Chat chat2 = chat.chatWith(jid);
@@ -78,6 +79,7 @@ public class Mensajes {
 
     }
 
+    // listener para las notificaciones
     public static void recibir(AbstractXMPPConnection connection) {
         ChatManager chatManager = ChatManager.getInstanceFor(connection);
         chatManager.addIncomingListener(new IncomingChatMessageListener() {
@@ -88,6 +90,7 @@ public class Mensajes {
         });
     }
 
+    // envio de solicitud y agregar contacto
     public static void ContactoSend(AbstractXMPPConnection connection)
             throws NotLoggedInException, NoResponseException, XMPPErrorException,
             NotConnectedException, InterruptedException, XmppStringprepException {
@@ -122,7 +125,7 @@ public class Mensajes {
                     BareJid fromJID = presence.getFrom().asBareJid();
 
                     try {
-                        // Accepting the request
+                        // Aceptar el request
                         roster.createItemAndRequestSubscription(fromJID, tunombre, null);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -135,6 +138,7 @@ public class Mensajes {
         roster.createItemAndRequestSubscription(jid, targetJID, null);
     }
 
+    // ver a los contactos
     public static void Personas(AbstractXMPPConnection connection)
             throws SmackException, IOException, XMPPException, InterruptedException {
 
@@ -178,6 +182,7 @@ public class Mensajes {
         }
     }
 
+    // retornar informacion de los contactos
     public static void retrieveVCard(AbstractXMPPConnection connection)
             throws NoResponseException, XMPPErrorException, NotConnectedException, InterruptedException {
 
@@ -207,6 +212,7 @@ public class Mensajes {
         }
     }
 
+    // chat grupal
     public static void MUC(AbstractXMPPConnection connection)
             throws XmppStringprepException, NotAMucServiceException,
             XMPPErrorException, NoResponseException, NotConnectedException, InterruptedException,
@@ -228,7 +234,7 @@ public class Mensajes {
 
         // Create a MucEnterConfiguration
         MucEnterConfiguration.Builder mucEnterConfigBuilder = muc.getEnterConfigurationBuilder(nickname)
-                .requestNoHistory(); // Here, we are using requestNoHistory(), but you can configure as you need.
+                .requestNoHistory(); // Este se usa para no mostrar el historial
 
         MucEnterConfiguration mucEnterConfiguration = mucEnterConfigBuilder.build();
 
@@ -255,6 +261,7 @@ public class Mensajes {
 
     }
 
+    // funcion para mandar archivos
     public static void Archivos(AbstractXMPPConnection connection) throws XmppStringprepException, SmackException {
         FileTransferManager fileTransferManager = FileTransferManager.getInstanceFor(connection);
         Scanner sc = new Scanner(System.in);

@@ -13,6 +13,7 @@ public class Connection {
 
         int choice;
 
+        // primer menu
         do {
 
             System.out.println("Bienvenido! Elija una opcion");
@@ -41,7 +42,7 @@ public class Connection {
 
                 AbstractXMPPConnection iniciado = Initiator.Coneccion(user, pass);
                 System.out.println("Se ha iniciado sesion");
-                do {
+                do {// segundo menu cuando la sesion este iniciada
                     Mensajes.recibir(iniciado);
 
                     System.out

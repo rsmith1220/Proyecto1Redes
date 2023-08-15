@@ -17,6 +17,8 @@ import org.jivesoftware.smackx.iqregister.AccountManager;
 import org.jxmpp.jid.parts.Localpart;
 
 public class Initiator {
+
+    // iniciar sesion
     public static AbstractXMPPConnection Coneccion(String user, String pass)
             throws SmackException, IOException, XMPPException, InterruptedException {
 
@@ -35,6 +37,7 @@ public class Initiator {
         return connection;
     }
 
+    // cerrar sesion
     public static String Deconeccion(AbstractXMPPConnection connection)
             throws SmackException, IOException, XMPPException, InterruptedException {
 
@@ -44,6 +47,7 @@ public class Initiator {
 
     }
 
+    // crear un usuario nuevo
     public static void Creation()
             throws SmackException, IOException, XMPPException, InterruptedException {
         System.out.println("Ingrese su nombre");
@@ -65,6 +69,7 @@ public class Initiator {
 
             AccountManager accountManager = AccountManager.getInstance(connection);
 
+            // se hace la prueba
             try {
                 if (accountManager.supportsAccountCreation()) {
                     accountManager.sensitiveOperationOverInsecureConnection(true);
@@ -79,7 +84,6 @@ public class Initiator {
             }
             connection.disconnect();
 
-            connection.disconnect();
         } catch (Exception e) {
             System.out.println(e);
             System.out.println("\n Su cuenta no fue creada");
@@ -88,6 +92,7 @@ public class Initiator {
 
     }
 
+    // eliminar cuenta
     public static void eliminar() {
 
         System.out.println("Ingrese su usuario para confirmar la eliminacion");
@@ -97,6 +102,7 @@ public class Initiator {
         System.out.println("Ingrese su password");
         String pass = sc.nextLine();
 
+        // verifica la cuenta que se eliminara
         try {
             XMPPTCPConnectionConfiguration config = XMPPTCPConnectionConfiguration.builder()
                     .setHost("alumchat.xyz")
@@ -109,7 +115,8 @@ public class Initiator {
             connection.connect();
             connection.login();
 
-            AccountManager accountManager = AccountManager.getInstance(connection);
+            AccountManager accountManager = AccountManager.getInstance(connection); // se conecta y asi sabe que cuenta
+                                                                                    // eliminar
             accountManager.deleteAccount();
             System.out.println("Cuenta eliminada");
 
@@ -119,6 +126,7 @@ public class Initiator {
         }
     }
 
+    // define mensaajes de presencia y status
     public static void Presencia(AbstractXMPPConnection connection) throws NotConnectedException, InterruptedException {
         StanzaFactory stanzaFactory = connection.getStanzaFactory();
         PresenceBuilder presenceBuilder = stanzaFactory.buildPresenceStanza();
@@ -127,21 +135,21 @@ public class Initiator {
         Scanner sc = new Scanner(System.in);
         int coose = sc.nextInt();
         switch (coose) {
-            case 1:
+            case 1:// available
                 Presence presence = presenceBuilder.setMode(Presence.Mode.available).build();
                 presence = stanzaFactory.buildPresenceStanza()
                         .setPriority(10)
                         .build();
                 connection.sendStanza(presence);
                 break;
-            case 2:
+            case 2:// do not disturb
                 presence = presenceBuilder.setMode(Presence.Mode.dnd).build();
                 presence = stanzaFactory.buildPresenceStanza()
                         .setPriority(10)
                         .build();
                 connection.sendStanza(presence);
                 break;
-            case 3:
+            case 3:// away
                 presence = presenceBuilder.setMode(Presence.Mode.away).build();
                 connection.sendStanza(presence);
                 break;
