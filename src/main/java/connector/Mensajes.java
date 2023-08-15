@@ -18,6 +18,8 @@ import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.RosterListener;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.filetransfer.FileTransferManager;
+import org.jivesoftware.smackx.filetransfer.OutgoingFileTransfer;
 import org.jivesoftware.smackx.muc.DiscussionHistory;
 import org.jivesoftware.smackx.muc.MucEnterConfiguration;
 import org.jivesoftware.smackx.muc.MultiUserChat;
@@ -28,11 +30,13 @@ import org.jivesoftware.smackx.vcardtemp.VCardManager;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
+import org.jxmpp.jid.EntityFullJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
 import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -248,6 +252,25 @@ public class Mensajes {
             muc.sendMessage(mensaje);
         } while (opcion != 2);
         muc.leave();
+
+    }
+
+    public static void Archivos(AbstractXMPPConnection connection) throws XmppStringprepException, SmackException {
+        FileTransferManager fileTransferManager = FileTransferManager.getInstanceFor(connection);
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Ingrese el nombre de la persona ");
+        String persona = sc.nextLine();
+        EntityFullJid recipientJID = JidCreate.entityFullFrom(persona + "@alumchat.xyz/gajim.S5L2T3ED");
+
+        // Create the outgoing file transfer
+        OutgoingFileTransfer transfer = fileTransferManager.createOutgoingFileTransfer(recipientJID);
+        System.out.println("Ingrese el camino al archivo ");
+        String camino = sc.nextLine();
+        File file = new File(camino);
+
+        System.out.println("Ingrese una descripcion ");
+        String descripcion = sc.nextLine();
+        transfer.sendFile(file, descripcion);
 
     }
 

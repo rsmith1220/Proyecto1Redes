@@ -122,13 +122,13 @@ public class Initiator {
     public static void Presencia(AbstractXMPPConnection connection) throws NotConnectedException, InterruptedException {
         StanzaFactory stanzaFactory = connection.getStanzaFactory();
         PresenceBuilder presenceBuilder = stanzaFactory.buildPresenceStanza();
-        Presence presence = presenceBuilder.setMode(Presence.Mode.available).build();
+
         System.out.println("Presencia\n 1.Available\n 2.Do not disturb\n 3.Away");
         Scanner sc = new Scanner(System.in);
         int coose = sc.nextInt();
         switch (coose) {
             case 1:
-                presence = presenceBuilder.setMode(Presence.Mode.available).build();
+                Presence presence = presenceBuilder.setMode(Presence.Mode.available).build();
                 presence = stanzaFactory.buildPresenceStanza()
                         .setPriority(10)
                         .build();

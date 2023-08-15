@@ -46,7 +46,7 @@ public class Connection {
 
                     System.out
                             .println(
-                                    "Desea mandar un mesnaje \n 1.Privado\n 2.Chat room\n 3.Borrar cuenta\n 4.Ver contactos\n 5.Agregar contacto\n 6.Ver detalles de contacto\n 7.Cambiar presencia\n 8.Cerrar sesion\n");
+                                    "Desea mandar un mesnaje \n 1.Privado\n 2.Chat room\n 3.Borrar cuenta\n 4.Ver contactos\n 5.Agregar contacto\n 6.Ver detalles de contacto\n 7.Cambiar presencia\n 8.Enviar archivos\n 9.Cerrar sesion\n");
 
                     choice = sc.nextInt();
                     switch (choice) {
@@ -75,14 +75,18 @@ public class Connection {
                         case 7:// presencia
                             Initiator.Presencia(iniciado);
                             break;
-                        case 8:// desconectarse
+                        case 8:
+                            Mensajes.Archivos(iniciado);
+                            break;
+                        case 9:// desconectarse
                             Initiator.Deconeccion(iniciado);
                             break;
+
                         default:
                             System.out.println("Ingrese una opcion correcta");
                     }
 
-                } while (choice != 8);
+                } while (choice != 9);
 
                 break;
             case 2:
