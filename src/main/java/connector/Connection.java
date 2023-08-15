@@ -1,19 +1,6 @@
 package connector;
 
 import org.jivesoftware.smack.*;
-import org.jivesoftware.smack.chat2.Chat;
-import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.roster.Roster;
-import org.jivesoftware.smack.roster.RosterEntry;
-import org.jivesoftware.smack.roster.RosterListener;
-import org.jivesoftware.smack.tcp.XMPPTCPConnection;
-import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
-import org.jxmpp.jid.EntityBareJid;
-import org.jxmpp.jid.impl.JidCreate;
-import org.jxmpp.jid.parts.Localpart;
-import org.jxmpp.stringprep.XmppStringprepException; // Import the exception
-import org.sakaiproject.chat2.model.ChatManager;
 
 import java.io.IOException;
 
@@ -69,7 +56,11 @@ public class Connection {
                             System.out.println(result);
                             break;
                         case 2: // chat room
+
+                            Mensajes.MUC(iniciado);
+
                             break;
+
                         case 3:// borrar
                             Initiator.eliminar();
                             break;

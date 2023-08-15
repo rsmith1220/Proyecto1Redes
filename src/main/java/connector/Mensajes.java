@@ -1,6 +1,8 @@
 package connector;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
+import org.jivesoftware.smack.MessageListener;
+import org.jivesoftware.smack.SmackConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.SmackException.NoResponseException;
@@ -15,12 +17,19 @@ import org.jivesoftware.smack.roster.Roster;
 import org.jivesoftware.smack.roster.RosterEntry;
 import org.jivesoftware.smack.roster.RosterListener;
 import org.jivesoftware.smackx.disco.ServiceDiscoveryManager;
+import org.jivesoftware.smackx.muc.DiscussionHistory;
+import org.jivesoftware.smackx.muc.MucEnterConfiguration;
+import org.jivesoftware.smackx.muc.MultiUserChat;
+import org.jivesoftware.smackx.muc.MultiUserChatManager;
+import org.jivesoftware.smackx.muc.MultiUserChatException.MucNotJoinedException;
+import org.jivesoftware.smackx.muc.MultiUserChatException.NotAMucServiceException;
 import org.jivesoftware.smackx.vcardtemp.VCardManager;
 import org.jivesoftware.smackx.vcardtemp.packet.VCard;
 import org.jxmpp.jid.BareJid;
 import org.jxmpp.jid.EntityBareJid;
 import org.jxmpp.jid.Jid;
 import org.jxmpp.jid.impl.JidCreate;
+import org.jxmpp.jid.parts.Resourcepart;
 import org.jxmpp.stringprep.XmppStringprepException;
 
 import java.io.IOException;
@@ -182,6 +191,54 @@ public class Mensajes {
         } else {
             System.out.println("Server doesn't support vCards");
         }
+    }
+
+    public static void MUC(AbstractXMPPConnection connection)
+            throws XmppStringprepException, NotAMucServiceException,
+            XMPPErrorException, NoResponseException, NotConnectedException, InterruptedException,
+            MucNotJoinedException {
+
+        int opcion = 0;
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Ingrese el nombre del grupo");
+        String grupo = sc.nextLine();
+        System.out.println("Ingrese su nombre");
+        String nombre = sc.nextLine();
+
+        EntityBareJid mucJid = JidCreate.entityBareFrom(grupo + "@conference.alumchat.xyz");
+        Resourcepart nickname = Resourcepart.from(nombre);
+
+        // Get the MUC manager
+        MultiUserChatManager mucManager = MultiUserChatManager.getInstanceFor(connection);
+        MultiUserChat muc = mucManager.getMultiUserChat(mucJid);
+
+        // Create a MucEnterConfiguration
+        MucEnterConfiguration.Builder mucEnterConfigBuilder = muc.getEnterConfigurationBuilder(nickname)
+                .requestNoHistory(); // Here, we are using requestNoHistory(), but you can configure as you need.
+
+        MucEnterConfiguration mucEnterConfiguration = mucEnterConfigBuilder.build();
+
+        // Join the MUC
+        muc.join(mucEnterConfiguration);
+        do {
+            System.out.println("1. Ver chat\n 2.Salir del grupo");
+            opcion = sc.nextInt();
+            muc.addMessageListener(new MessageListener() {
+                @Override
+                public void processMessage(Message message) {
+                    if (message.getBody() != null) {
+                        System.out.println(message.getFrom() + ": " + message.getBody());
+                    }
+                }
+            });
+
+            System.out.println("Escriba su mensaje");
+            String mensaje = sc.nextLine();
+
+            muc.sendMessage(mensaje);
+        } while (opcion != 2);
+        muc.leave();
+
     }
 
 }
