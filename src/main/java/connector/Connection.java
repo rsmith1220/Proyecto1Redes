@@ -46,15 +46,13 @@ public class Connection {
 
                     System.out
                             .println(
-                                    "Desea mandar un mesnaje \n 1.Privado\n 2.Chat room\n 3.Borrar cuenta\n 4.Ver contactos\n 5.Agregar contacto\n 6.Ver detalles de contacto\n 7.Cerrar sesion\n");
+                                    "Desea mandar un mesnaje \n 1.Privado\n 2.Chat room\n 3.Borrar cuenta\n 4.Ver contactos\n 5.Agregar contacto\n 6.Ver detalles de contacto\n 7.Cambiar presencia\n 8.Cerrar sesion\n");
 
                     choice = sc.nextInt();
                     switch (choice) {
                         case 1:
                             // Send a message
-                            String result = Mensajes.envio(iniciado);
-
-                            System.out.println(result);
+                            Mensajes.envio(iniciado);
                             break;
                         case 2: // chat room
 
@@ -73,14 +71,18 @@ public class Connection {
                             break;
                         case 6:
                             Mensajes.retrieveVCard(iniciado);
-                        case 7:// desconectarse
+                            break;
+                        case 7:// presencia
+                            Initiator.Presencia(iniciado);
+                            break;
+                        case 8:// desconectarse
                             Initiator.Deconeccion(iniciado);
                             break;
                         default:
                             System.out.println("Ingrese una opcion correcta");
                     }
 
-                } while (choice != 7);
+                } while (choice != 8);
 
                 break;
             case 2:

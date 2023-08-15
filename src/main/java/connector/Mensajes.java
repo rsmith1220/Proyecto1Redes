@@ -37,8 +37,11 @@ import java.io.IOException;
 import java.util.*;
 
 public class Mensajes {
-    public static String envio(AbstractXMPPConnection connection)
+
+    public static void envio(AbstractXMPPConnection connection)
             throws SmackException, IOException, XMPPException, InterruptedException {
+        int opcion = 0;
+        String mensaje = "";
         org.jivesoftware.smack.chat2.ChatManager chat = org.jivesoftware.smack.chat2.ChatManager
                 .getInstanceFor(connection);
 
@@ -53,14 +56,22 @@ public class Mensajes {
         System.out.println("Ingrese el nombre de la persona a la que va dirigida el mensaje");
         String nombre = sc.nextLine();
         EntityBareJid jid = JidCreate.entityBareFrom(nombre + "@alumchat.xyz");
-        // Chat chat = chatManager.chatWith(jid);
-        Chat chat2 = chat.chatWith(jid);
+        recibir(connection);
 
-        System.out.println("Ingrese un mensaje");
-        String mensaje = sc.nextLine();
-        chat2.send(mensaje);
+        do {
 
-        return "Mensaje enviado";
+            Chat chat2 = chat.chatWith(jid);
+
+            System.out.println("Ingrese un mensaje");
+            mensaje = sc.nextLine();
+            chat2.send(mensaje);
+
+            System.out.println("1.Seguir chateando \n2.Salir del chat");
+            opcion = sc.nextInt();
+            sc.nextLine();
+
+        } while (opcion != 2);
+
     }
 
     public static void recibir(AbstractXMPPConnection connection) {
@@ -71,7 +82,6 @@ public class Mensajes {
                 System.out.println("Received message from " + from + ": " + message.getBody());
             }
         });
-
     }
 
     public static void ContactoSend(AbstractXMPPConnection connection)
@@ -118,7 +128,7 @@ public class Mensajes {
         });
 
         // Send subscription request
-        roster.createItemAndRequestSubscription(jid, "Nickname", null);
+        roster.createItemAndRequestSubscription(jid, targetJID, null);
     }
 
     public static void Personas(AbstractXMPPConnection connection)
@@ -220,17 +230,17 @@ public class Mensajes {
 
         // Join the MUC
         muc.join(mucEnterConfiguration);
+        muc.addMessageListener(new MessageListener() {
+            @Override
+            public void processMessage(Message message) {
+                if (message.getBody() != null) {
+                    System.out.println(message.getFrom() + ": " + message.getBody());
+                }
+            }
+        });
         do {
             System.out.println("1. Ver chat\n 2.Salir del grupo");
             opcion = sc.nextInt();
-            muc.addMessageListener(new MessageListener() {
-                @Override
-                public void processMessage(Message message) {
-                    if (message.getBody() != null) {
-                        System.out.println(message.getFrom() + ": " + message.getBody());
-                    }
-                }
-            });
 
             System.out.println("Escriba su mensaje");
             String mensaje = sc.nextLine();

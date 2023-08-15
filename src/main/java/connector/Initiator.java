@@ -7,6 +7,10 @@ import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.SmackException;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.SmackException.NotConnectedException;
+import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.packet.PresenceBuilder;
+import org.jivesoftware.smack.packet.StanzaFactory;
 import org.jivesoftware.smack.tcp.XMPPTCPConnection;
 import org.jivesoftware.smack.tcp.XMPPTCPConnectionConfiguration;
 import org.jivesoftware.smackx.iqregister.AccountManager;
@@ -113,5 +117,53 @@ public class Initiator {
             System.out.println(e);
             System.out.println("\n Su cuenta no fue eliminada");
         }
+    }
+
+    public static void Presencia(AbstractXMPPConnection connection) throws NotConnectedException, InterruptedException {
+        StanzaFactory stanzaFactory = connection.getStanzaFactory();
+        PresenceBuilder presenceBuilder = stanzaFactory.buildPresenceStanza();
+        Presence presence = presenceBuilder.setMode(Presence.Mode.available).build();
+        System.out.println("Presencia\n 1.Available\n 2.Do not disturb\n 3.Away");
+        Scanner sc = new Scanner(System.in);
+        int coose = sc.nextInt();
+        switch (coose) {
+            case 1:
+                presence = presenceBuilder.setMode(Presence.Mode.available).build();
+                presence = stanzaFactory.buildPresenceStanza()
+                        .setPriority(10)
+                        .build();
+                connection.sendStanza(presence);
+                break;
+            case 2:
+                presence = presenceBuilder.setMode(Presence.Mode.dnd).build();
+                presence = stanzaFactory.buildPresenceStanza()
+                        .setPriority(10)
+                        .build();
+                connection.sendStanza(presence);
+                break;
+            case 3:
+                presence = presenceBuilder.setMode(Presence.Mode.away).build();
+                connection.sendStanza(presence);
+                break;
+            default:
+                System.out.println("Elija una opcion correcta");
+        }
+        System.out.println("Desea agregar un status?");
+        System.out.println("Status\n 1.si\n 2.no\n ");
+        coose = sc.nextInt();
+        switch (coose) {
+            case 1:
+                System.out.println("Escriba su status");
+                String estatus = sc.nextLine();
+                Presence status = presenceBuilder.setStatus(estatus).build();
+                connection.sendStanza(status);
+                sc.nextLine();
+                break;
+            case 2:
+                break;
+            default:
+                System.out.println("Elija una opcion correcta");
+        }
+
     }
 }
