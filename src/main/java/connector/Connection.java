@@ -53,24 +53,13 @@ public class Connection {
                 String pass = sc.nextLine();
 
                 AbstractXMPPConnection iniciado = Initiator.Coneccion(user, pass);
-
+                System.out.println("Se ha iniciado sesion");
                 do {
-                    System.out.println("Se ha iniciado sesion");
 
                     System.out
                             .println(
-                                    "Desea mandar un mesnaje 1.Privado 2.Chat room 3. Borrar cuenta 4.Ver usuarios 5.Cerrar sesion");
-                    long startTime = System.currentTimeMillis();
-                    long duration = 5000; // 5 seconds in milliseconds
+                                    "Desea mandar un mesnaje \n 1.Privado\n 2.Chat room\n 3.Borrar cuenta\n 4.Ver contactos\n 5.Agregar contacto\n 6.Ver detalles de contacto\n 7.Cerrar sesion\n");
 
-                    while (System.currentTimeMillis() - startTime < duration) {
-                        Mensajes.recibir(iniciado);
-                        try {
-                            Thread.sleep(100); // Sleep for 100 milliseconds
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
                     choice = sc.nextInt();
                     switch (choice) {
                         case 1:
@@ -87,14 +76,19 @@ public class Connection {
                         case 4:// ver usuarios
                             Mensajes.Personas(iniciado);
                             break;
-                        case 5:// desconectarse
+                        case 5: // add contact
+                            Mensajes.ContactoSend(iniciado);
+                            break;
+                        case 6:
+                            Mensajes.retrieveVCard(iniciado);
+                        case 7:// desconectarse
                             Initiator.Deconeccion(iniciado);
                             break;
                         default:
                             System.out.println("Ingrese una opcion correcta");
                     }
 
-                } while (choice != 5);
+                } while (choice != 7);
 
                 break;
             case 2:

@@ -1,8 +1,15 @@
 package connector;
 
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.Scanner;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.jivesoftware.smack.AbstractXMPPConnection;
 import org.jivesoftware.smack.ConnectionConfiguration;
@@ -66,13 +73,22 @@ public class Initiator {
                     .build();
             AbstractXMPPConnection connection = new XMPPTCPConnection(config);
             connection.connect();
-            connection.login();
 
             AccountManager accountManager = AccountManager.getInstance(connection);
 
-            Localpart localpart = Localpart.from(usuario);
-            accountManager.createAccount(localpart, password);
-            System.out.println("Su usuario fue creado, ya puede iniciar sesion");
+            try {
+                if (accountManager.supportsAccountCreation()) {
+                    accountManager.sensitiveOperationOverInsecureConnection(true);
+                    accountManager.createAccount(Localpart.from(usuario), password);
+                    System.out.println("\nSe ha creado su cuenta, ya puede iniciar sesion\n");
+                } else {
+                    System.out.println("Account creation is not supported by this server");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("Error al crear la cuenta");
+            }
+            connection.disconnect();
 
             connection.disconnect();
         } catch (Exception e) {
